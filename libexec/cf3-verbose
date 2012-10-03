@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Usage: cf3 verbose
+# Summary: Run Cfengine 3 with "-v" argument.
+#
+# Help: Runs Cfengine 3 with "-v" (verbose) turned on.
+
+set -e
+
+sudo /var/cfengine/bin/cf-agent -KIv

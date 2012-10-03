@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# Usage: cf3 install_now_please
+# Summary: Run Cfengine 3 with "-Dinstall_now_please"
+#
+# Help: Runs Cfengine 3 with "install_now_please" defined.  This is
+# the class I use that forces package installation, rather than
+# waiting 'til the top of the hour (or whenever).
+#
+# NOTE: If you want to install Cfengine 3 itself, run "cf3 bootstrap".
+set -e
+
+sudo /var/cfengine/bin/cf-agent -KI -Dinstall_now_please

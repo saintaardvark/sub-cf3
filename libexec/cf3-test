@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Usage: cf3 test
+# Summary: Test the syntax of the Cfengine 3 master branch
+# Help: Run cf-promises to test the synax in the master branch of the Cfengine 3 git tree.
+
+set -e
+source $_CF3_ROOT/share/config
+
+cd $CF3_REPO && sudo /usr/local/sbin/cf-promises --verbose -f ./promises.cf

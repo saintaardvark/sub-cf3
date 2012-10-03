@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Usage: cf3 update
+# Summary: Update cf3 server with latest from git
+# Help: Run all necessary commands to update the Cfengine 3 server with the latest from the
+# master branch of the git tree.
+
+set -e
+
+cd /var/cfengine && sudo make

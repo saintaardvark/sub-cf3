@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# Usage: cf3 bootstrap
+# Summary: Bootstrap Cfengine 3, removing Cfengine 2 if necessary.
+
+# Help: Right now, only deals with RPMs.
+#
+# FIXME: Detect which flavour, or at least take an argument.
+# FIXME: Should grab latest version of cf files via git.
+# FIXME: set -e means we should detect whether cfengine2 is installed before blindly removing it.
+# FIXME: There's probably a better way of running cf-runagent.
+# FIXME: Should use bootstrap option built into cf3.
+
+set -e
+source $_CF3_ROOT/share/config
+
+sudo rpm -ev cfengine
+sudo rm -rf /var/cfengine
+sudo rpm -ivh CF3_PKG_DIR/${centos[pkg]}
+sudo cp $_CF3_ROOT/share/*.cf /var/cfengine/inputs
+sudo chown -R root:wheel /var/cfengine/inputs
+sudo chmod -R 750 /var/cfengine/inputs
+echo yes | sudo /var/cfengine/bin/cf-runagent -i -H $CF3_POLICY_SERVER -f failsafe.cf
+sudo /var/cfengine/bin/cf-agent -f failsafe.cf -v
+sudo chkconfig cfengine3 on
+sudo service cfengine3 start

@@ -1,0 +1,20 @@
+CF3_POLICY_SERVER=cf.example.com
+CF3_REPO=/home/aardvark/git/cf-02.chibi.ubc.ca
+CF3_PKG_DIR=/home/aardvark/tarballs
+
+declare -A centos
+centos[box]="centos-5"
+centos[pkg]="cfengine-community-3.3.0-1.x86_64.rpm"
+# Will this work?
+centos[pkg_install]="sudo rpm -i /vagrant/$centos[pkg]"
+
+declare -A ubuntu
+ubuntu[box]="base"
+ubuntu[pkg]="cfengine-community_3.3.5_i386.deb"
+ubuntu[pkg_install]="sudo dpkg -i /vagrant/$ubuntu[pkg]"
+
+declare -A opensuse
+opensuse[box]="lucid32"
+opensuse[pkg]="cfengine-community-3.3.0-1.x86_64.rpm"
+opensuse[pkg_install]="sudo rpm -i /vagrant/$opensuse[pkg]"
+

@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# Usage: cf3 config
+# Summary: Dump config file.
+
+set -e
+
+cat $_CF3_ROOT/share/config

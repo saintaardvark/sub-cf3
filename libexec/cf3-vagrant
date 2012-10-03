@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+# Usage: cf3 vagrant [-f flavour] [-d directory] | [-slxvn]
+# Summary: A Small but Useful(tm) utility to help with vagrant and cfengine.
+
+# Help:
+#
+# -f [flavour] Specify the flavours.  Mandatory. Run -l to list them.
+# -d [dir]      Create/Destroy vagrant instance in [dir]. Mandatory when creating or destroying.
+# -s		Show directories created by this command.
+# -l		List flavours.
+# -x		Destroy the vm and remove the directory.
+# -v		Be verbose.				    FIXME: Not working.
+# -n		Testing only: show, do not do. Implies -v.  FIXME: Not working.
+
+# FIXME:
+# - Really, cf3 should be part of base install.
+# - Add repackage command
+set -e
+
+source $_CF3_ROOT/share/config
+
+list_flavours() {
+    echo "One of: centos, opensuse11.3, ubuntu."
+    exit 1
+}
+
+show_dirs() {
+    find . -maxdepth 2 -type f -name .created_by_cf3 -exec dirname {} \;
+    exit
+}
+
+destroy() {
+    if [ x$DIR = "x" ] ; then
+	echo "No directory given!"
+    else
+	DIR=$1
+	cd ~/$DIR
+	if [ -f .created_by_cf3 ] ; then
+	    [ -f Vagrantfile ] && vagrant destroy
+	    cd ~ && rm -rfv ~/${DIR} && exit 0
+	else
+	    echo "Doesn't look like I created this directory...remove it yourself."
+	fi
+    fi
+    exit 1
+}
+
+FLAVOUR=
+DIR=
+VERBOSE=
+DRYRUN=
+DESTROY=
+while getopts "f:d:xlsvnh" OPTION ; do
+     case $OPTION in
+         f) FLAVOUR=$OPTARG ;;
+         d) DIR=$OPTARG ;;
+	 l) list_flavours ;;
+	 s) show_dirs ;;
+         x) DESTROY=1 ;;
+         v) VERBOSE=1 ;;
+	 d) DRYRUN=1 ;;
+         ?) echo "No such option! Try cf3 help" ; exit 1 ;;
+     esac
+done
+
+if [ x$DESTROY = "x1" ] ; then
+    destroy $DIR
+fi
+# Check for mandatory args
+if [ -z $FLAVOUR -o -z $DIR ]; then
+     echo "I need a flavour and a directory!"
+     list_flavours
+fi
+
+if [ -z ${FLAVOUR} ] ; then
+    list_flavours
+fi
+
+
+mkdir ~/${DIR}
+touch ~/${DIR}/.created_by_cf3
+cd ${DIR}
+git clone $CF3_REPO cf3
+cp ${flavour[pkg]} .
+vagrant init ${flavour[box]}
+vagrant up
+vagrant ssh -c "sudo ln -s /vagrant/cf3 /var/cfengine"
+vagrant ssh -c "${flavour[pkg_install]}"
