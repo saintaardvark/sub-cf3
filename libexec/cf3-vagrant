@@ -9,12 +9,17 @@
 # -s		Show directories created by this command.
 # -l		List flavours.
 # -x		Destroy the vm and remove the directory.
-# -v		Be verbose.				    FIXME: Not working.
-# -n		Testing only: show, do not do. Implies -v.  FIXME: Not working.
 
 # FIXME:
-# - Really, cf3 should be part of base install.
+# - Really, cf3 should be part of base install, or we should be using the Vagrant Cf3 provider
+# - Support picking up where the command left off; useful for debugging
 # - Add repackage command
+
+# - I have not yet figured out the best way to copy input files into
+#   place, so that's left as an exercise for the reader.  What I really want is to
+#   branch, clone that to the cf3 directory, and have Cfengine update from there rather
+#   than the masterserver.
+
 set -e
 
 source $_CF3_ROOT/share/config
@@ -76,13 +81,17 @@ if [ -z ${FLAVOUR} ] ; then
     list_flavours
 fi
 
+# Ack -- this is how you have to deref.
+box=$(eval echo \$\{$FLAVOUR[box]})
+pkg=$(eval echo \$\{$FLAVOUR[pkg]})
+pkg_install=$(eval echo \$\{$FLAVOUR[pkg_install]})
 
 mkdir ~/${DIR}
 touch ~/${DIR}/.created_by_cf3
 cd ${DIR}
 git clone $CF3_REPO cf3
-cp ${flavour[pkg]} .
-vagrant init ${flavour[box]}
+cp ${CF3_PKG_DIR}/$pkg .
+
+vagrant init $box
 vagrant up
-vagrant ssh -c "sudo ln -s /vagrant/cf3 /var/cfengine"
-vagrant ssh -c "${flavour[pkg_install]}"
+vagrant ssh -c "$pkg_install /vagrant/$pkg"

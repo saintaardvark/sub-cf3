@@ -2,6 +2,9 @@ CF3_POLICY_SERVER=cf.example.com
 CF3_REPO=/home/aardvark/git/cf-02.chibi.ubc.ca
 CF3_PKG_DIR=/home/aardvark/tarballs
 
+# Note: these arrays seems to depend on Bash 4, as they cause Bash
+# on CentOS 5 to complain.  I'm not real happy about that.
+
 declare -A centos
 centos[box]="centos-5"
 centos[pkg]="cfengine-community-3.3.0-1.x86_64.rpm"
@@ -17,4 +20,3 @@ declare -A opensuse
 opensuse[box]="lucid32"
 opensuse[pkg]="cfengine-community-3.3.0-1.x86_64.rpm"
 opensuse[pkg_install]="sudo rpm -i /vagrant/$opensuse[pkg]"
-
