@@ -9,7 +9,7 @@ You can find the software at:
 
 Share and enjoy!
 
-Hugh Brown 
-aardvark (at) saintaardvarkthecarpeted.com 
+Hugh Brown  
+aardvark (at) saintaardvarkthecarpeted.com  
 
 [1]: https://github.com/37signals/sub
